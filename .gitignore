@@ -1,0 +1,37 @@
+# Secrets — never commit
+.env
+*.token
+*-token
+*-chat-id
+
+# Audio + processed output
+voice-inbox/
+voice-archive/
+*.m4a
+*.mp3
+*.wav
+*.ogg
+*.aac
+*.flac
+*.aiff
+
+# Logs + lock files
+logs/
+*.log
+.lock
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# macOS
+.DS_Store
+.AppleDouble
+
+# Editor
+.vscode/
+.idea/
+*.swp

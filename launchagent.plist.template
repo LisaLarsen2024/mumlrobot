@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  LaunchAgent template for voice-to-claude.
+
+  Instructions:
+  1. Replace YOURNAME with your macOS username (or use absolute paths).
+  2. Adjust WatchPaths to your inbox folders.
+  3. Save as ~/Library/LaunchAgents/com.example.voice-to-claude.plist
+  4. Load: launchctl load ~/Library/LaunchAgents/com.example.voice-to-claude.plist
+  5. Stop:  launchctl unload ~/Library/LaunchAgents/com.example.voice-to-claude.plist
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.example.voice-to-claude</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/YOURNAME/voice-to-claude/voice-watcher-wrapper.sh</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/Users/YOURNAME/voice-to-claude</string>
+  <key>WatchPaths</key>
+  <array>
+    <string>/Users/YOURNAME/voice-to-claude/voice-inbox</string>
+    <string>/Users/YOURNAME/Library/Mobile Documents/com~apple~CloudDocs/voice-inbox</string>
+  </array>
+  <key>StartInterval</key>
+  <integer>60</integer>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+  <key>StandardOutPath</key>
+  <string>/Users/YOURNAME/voice-to-claude/logs/launchd-stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/YOURNAME/voice-to-claude/logs/launchd-stderr.log</string>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+</dict>
+</plist>
