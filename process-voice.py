@@ -217,7 +217,12 @@ def process_one(audio: Path) -> bool:
     archive_dir.mkdir(parents=True, exist_ok=True)
 
     archived_audio = archive_dir / audio.name
-    shutil.move(str(audio), str(archived_audio))
+    # iCloud Drive låser filer mot rename på tvers av filsystemer.
+    # Kopier byte-for-byte, så slett original — omgår sandbox-låsen.
+    with open(audio, "rb") as f_in:
+        with open(archived_audio, "wb") as f_out:
+            f_out.write(f_in.read())
+    os.remove(audio)
     log.info(f"Arkivert til {archive_dir}")
 
     try:
