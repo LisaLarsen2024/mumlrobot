@@ -217,12 +217,20 @@ def process_one(audio: Path) -> bool:
     archive_dir.mkdir(parents=True, exist_ok=True)
 
     archived_audio = archive_dir / audio.name
-    # iCloud Drive låser filer mot rename på tvers av filsystemer.
-    # Kopier byte-for-byte, så slett original — omgår sandbox-låsen.
-    with open(audio, "rb") as f_in:
-        with open(archived_audio, "wb") as f_out:
-            f_out.write(f_in.read())
-    os.remove(audio)
+    # iCloud Drive sandbox blokkerer både shutil.move, /bin/mv og Python open().
+    # /bin/cp og /bin/rm fungerer i LaunchAgent-kontekst når wrapper har TCC-tilgang.
+    # Tvinger nedlasting først (filen kan være placeholder selv om size > 0).
+    subprocess.run(["/usr/bin/brctl", "download", str(audio)], check=False)
+    # Retry ved transient deadlock — iCloud kan låse filen midlertidig.
+    for attempt in range(5):
+        try:
+            subprocess.run(["/bin/cp", str(audio), str(archived_audio)], check=True)
+            break
+        except subprocess.CalledProcessError:
+            if attempt == 4:
+                raise
+            time.sleep(2)
+    subprocess.run(["/bin/rm", str(audio)], check=True)
     log.info(f"Arkivert til {archive_dir}")
 
     try:
